@@ -1,0 +1,210 @@
+<ContainerBox>:
+    image_id: [imageView]
+    id: primaryContainer
+    orientation: 'vertical'
+    BoxLayout:
+        size_hint_y: 0.1
+        size_hint_x: 1
+
+        FloatLayout:
+            size_hint: (0.35, 1)
+
+        Button:
+            background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/load_image.png'
+            background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/load_image.png'
+            size_hint: (0.1, 1)
+            on_release: root.browse_files()
+
+        Label:
+            size_hint: (0.1, 1)
+            font_size: '24dp'
+            text: 'Media Displayer'
+
+        Button:
+            background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/save_image.png'
+            background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/save_image.png'
+            size_hint: (0.1, 1)
+            on_release: root.save_image()
+
+        FloatLayout:
+            size_hint: (0.19, 1)
+
+        Button:
+            background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/restart_icon.png'
+            background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/restart_icon.png'
+            size_hint: (0.05, 1)
+            on_release: root.restart(root.image_id[0])
+
+        FloatLayout:
+            size_hint: (0.11, 1)
+
+    BoxLayout:
+        orientation: 'horizontal'
+
+        GridLayout:
+            size_hint_y: 1
+            size_hint_x: 1
+            cols: 2
+
+            BoxLayout:
+                anchor_x: 'center'
+                anchor_y: 'center'
+
+                Image:
+                    size_hint: (1, 1)
+                    id: imageView
+                    source: root.source
+                    allow_stretch: True
+
+        GridLayout:
+            id: transform_button_container
+            rows: 8
+            cols: 1
+            size_hint: (0.39, 1)
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                Button:
+                    background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
+                    background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+                    font_size: '18dp'
+                    halign: 'center'
+                    text: "Undo"
+                    on_release: root.undo(root.image_id[0])
+
+                Button:
+                    background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
+                    background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+                    font_size: '18dp'
+                    halign: 'center'
+                    text: "RGB to Greyscale"
+                    on_release: root.transformImage(root.image_id[0], self.text, [])
+
+            FullButton:
+                button_text: "Negative Transformation"
+                image_id: root.image_id[0]
+
+            SliderButton:
+                button_text: "Binary\nTransformation"
+                image_id: root.image_id[0]
+                min_value: 0
+                max_value: 255
+                step_value: 1
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+
+                Button:
+                    size_hint: (0.4, 0.8)
+                    background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
+                    background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+                    font_size: '18dp'
+                    halign: 'center'
+                    text: "Multilevel\nTransformation"
+                    on_release: root.transformImage(root.image_id[0], self.text, [multi_slider1.value, multi_slider2.value])
+
+                FloatLayout:
+                    size_hint: (0.05, 0.8)
+
+                BoxLayout:
+                    size_hint: (0.55, 0.8)
+                    orientation: 'vertical'
+                    Slider:
+                        id: multi_slider1
+                        orientation: 'horizontal'
+                        min: 0
+                        max: 255
+                        step: 1
+                    Label:
+                        text: 't1 value: ' + str(int(multi_slider1.value))
+                    Slider:
+                        id: multi_slider2
+                        orientation: 'horizontal'
+                        min: 0
+                        max: 255
+                        step: 1
+                    Label:
+                        text: 't2 value: ' + str(int(multi_slider2.value))
+
+            FullButton:
+                button_text: "Log 10 Transformation"
+                image_id: root.image_id[0]
+
+            SliderButton:
+                button_text: "Gamma\nTransformation"
+                image_id: root.image_id[0]
+                min_value: 0
+                max_value: 25
+                step_value: 0.1
+
+            FullButton:
+                button_text: "Histogram Equalization"
+                image_id: root.image_id[0]
+
+            SliderButton:
+                button_text: "AINDANE Color\nEnhancement"
+                image_id: root.image_id[0]
+                min_value: 0.75
+                max_value: 0.99
+                step_value: 0.01
+
+
+<FullButton>
+    size_hint: (1, 1)
+    button_text: ''
+    image_id: ''
+
+    Button:
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        size_hint: (0.8, 0.7)
+        background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
+        background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+        font_size: '18dp'
+        text: root.button_text
+        on_release: root.transformImage(root.image_id, self.text, [])
+
+
+
+<SliderButton>
+    size_hint: (1, 1)
+    image_id: ''
+
+    button_text: ''
+    min_value: 0
+    max_value: 0
+    step_value: 0
+
+    Button:
+        id: slider_button
+        size_hint: (0.4, 0.8)
+        background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
+        background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+        font_size: '18dp'
+        halign: 'center'
+        text: root.button_text
+        on_release: root.transformImage(root.image_id, self.text, [slider.value])
+
+    FloatLayout:
+        size_hint: (0.05, 0.8)
+
+    BoxLayout:
+        size_hint: (0.55, 0.8)
+        orientation: 'vertical'
+        Slider:
+            id: slider
+            orientation: 'horizontal'
+            min: root.min_value
+            max: root.max_value
+            step: root.step_value
+        Label:
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            text: 'Lambda value: ' + str(round(slider.value, 2))
+            on_touch_up: root.transformImage(root.image_id, slider_button.text, [slider.value])
+
+<LayoutContainer>
+    orientation: 'vertical'
+
+    ContainerBox:
+        id: button_layout
