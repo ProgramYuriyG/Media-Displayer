@@ -12,6 +12,7 @@ python -m pip install pillow
 python -m pip install opencv-python
 python -m pip install numpy==1.19.3
 python -m pip install -U matplotlib
+pip install plyer
 
 How To Run:
 python -m MediaDisplayer

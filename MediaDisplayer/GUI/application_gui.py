@@ -5,13 +5,8 @@ import MediaDisplayer.ImageManipulations.transformations as transformations
 from MediaDisplayer.ImageManipulations import histogram
 
 # kivy imports
-from kivy.atlas import CoreImage
-from kivy.cache import Cache
 from kivy.config import Config
-from kivy.graphics.texture import Texture
-from kivy import Logger
 from kivy.properties import ObjectProperty
-from kivy.uix.popup import Popup
 from kivy.uix.stacklayout import StackLayout
 from plyer import filechooser
 
@@ -19,31 +14,17 @@ from plyer import filechooser
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.core.window import Window
-from kivy.utils import get_color_from_hex as hex
-from kivy.metrics import dp
-from kivy.clock import Clock
 
 # layout imports
-from kivy.uix.anchorlayout import AnchorLayout
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import Screen, ScreenManager, NoTransition, FadeTransition
 
 # widget imports
 from kivy.core.image import Image
-from kivy.graphics import Color, Rectangle
-from kivy.uix.label import Label
-from kivy.uix.button import Button
-from kivy.uix.image import AsyncImage
-from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem, TabbedPanelHeader
 
 # base imports
 from PIL import Image as PILImage
-from io import BytesIO
 import numpy as np
-import math
-import io
 
 '''
 Import Commands
@@ -129,19 +110,24 @@ class ContainerBox(ImageTransformer, BoxLayout):
 
     def browse_files(self, img):
         path = filechooser.open_file(title="Pick an Image file..",
-                                     filters=["*.jpg", "*.png", "*.svg"])
+                                     filters=["*.jpg", "*.jpeg", "*.png"])
         if not path:
             return
         PILImage.open(path[0]).save(os.path.join(os.path.dirname(__file__), 'images\\temp.png'))
         self.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
-        self.img_list.clear()
         img.reload()
 
     def save_image(self, img):
         path = filechooser.save_file(title="Save File As")
+        org_source = os.path.basename(img.source)
         if not path:
             return
+        if not path[0].lower().endswith((".jpg", ".jpeg", ".png")):
+            path[0] += ".png"
         Image(img.texture).save(path[0])
+
+        self.source = os.path.join(os.path.dirname(__file__), 'images\\', org_source)
+        img.reload()
 
     def restart(self, img):
         img.source = os.path.join(os.path.dirname(__file__), 'images\\landscape.jpg')
