@@ -77,6 +77,8 @@ class ImageTransformer:
         PILimg = ''
         text = ' '.join(text.split())
 
+        print(text)
+
         if text == 'RGB to Greyscale':
             PILimg = transformations.colortogrey(img)
         elif text == 'Negative Transformation':
@@ -124,8 +126,10 @@ class ContainerBox(ImageTransformer, BoxLayout):
         super().__init__(**kwargs)
 
     def browse_files(self):
-        path = filechooser.open_file(title="Pick a CSV file..",
-                                     filters=[("Comma-separated Values", "*.csv")])
+        path = filechooser.open_file(title="Pick an Image file..",
+                                     filters=["*.jpg", "*.png", "*.svg"])
+        if not path:
+            return
         self.source = path[0]
 
     def save_image(self):
