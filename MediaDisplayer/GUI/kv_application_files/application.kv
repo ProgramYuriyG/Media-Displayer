@@ -10,8 +10,8 @@
             size_hint: (0.35, 1)
 
         Button:
-            background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/load_image.png'
-            background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/load_image.png'
+            background_normal: 'GUI/images/load_image.png'
+            background_down: 'GUI/images/load_image.png'
             size_hint: (0.1, 1)
             on_release: root.browse_files(imageView)
 
@@ -21,17 +21,17 @@
             text: 'Media Displayer'
 
         Button:
-            background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/save_image.png'
-            background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/save_image.png'
+            background_normal: 'GUI/images/save_image.png'
+            background_down: 'GUI/images/save_image.png'
             size_hint: (0.1, 1)
-            on_release: root.save_image()
+            on_release: root.save_image(imageView)
 
         FloatLayout:
             size_hint: (0.19, 1)
 
         Button:
-            background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/restart_icon.png'
-            background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/restart_icon.png'
+            background_normal: 'GUI/images/restart_icon.png'
+            background_down: 'GUI/images/restart_icon.png'
             size_hint: (0.05, 1)
             on_release: root.restart(root.image_id[0])
 
@@ -66,16 +66,16 @@
                 orientation: 'horizontal'
 
                 Button:
-                    background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
-                    background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+                    background_normal: 'GUI/images/button_background_small.png'
+                    background_down: 'GUI/images/button_pressed_small.png'
                     font_size: '18dp'
                     halign: 'center'
                     text: "Undo"
                     on_release: root.undo(root.image_id[0])
 
                 Button:
-                    background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
-                    background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+                    background_normal: 'GUI/images/button_background_small.png'
+                    background_down: 'GUI/images/button_pressed_small.png'
                     font_size: '18dp'
                     halign: 'center'
                     text: "RGB to Greyscale"
@@ -98,8 +98,8 @@
 
                 Button:
                     size_hint: (0.4, 0.8)
-                    background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
-                    background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+                    background_normal: 'GUI/images/button_background_small.png'
+                    background_down: 'GUI/images/button_pressed_small.png'
                     font_size: '18dp'
                     halign: 'center'
                     text: "Multilevel\nTransformation"
@@ -159,8 +159,8 @@
     Button:
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         size_hint: (0.8, 0.7)
-        background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
-        background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+        background_normal: 'GUI/images/button_background_small.png'
+        background_down: 'GUI/images/button_pressed_small.png'
         font_size: '18dp'
         text: root.button_text
         on_release: root.transformImage(root.image_id, self.text, [])
@@ -179,8 +179,8 @@
     Button:
         id: slider_button
         size_hint: (0.4, 0.8)
-        background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
-        background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+        background_normal: 'GUI/images/button_background_small.png'
+        background_down: 'GUI/images/button_pressed_small.png'
         font_size: '18dp'
         halign: 'center'
         text: root.button_text

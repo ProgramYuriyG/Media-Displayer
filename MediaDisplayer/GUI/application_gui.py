@@ -1,30 +1,49 @@
 # package imports
+import os
+
 import MediaDisplayer.ImageManipulations.transformations as transformations
 from MediaDisplayer.ImageManipulations import histogram
 
 # kivy imports
-from kivy.uix.stacklayout import StackLayout
-from kivy.properties import ObjectProperty
-from plyer import filechooser
+from kivy.atlas import CoreImage
+from kivy.cache import Cache
 from kivy.config import Config
+from kivy.graphics.texture import Texture
+from kivy import Logger
+from kivy.properties import ObjectProperty
+from kivy.uix.popup import Popup
+from kivy.uix.stacklayout import StackLayout
+from plyer import filechooser
 
 # higher order imports
-from kivy.core.window import Window
-from kivy.lang import Builder
 from kivy.app import App
+from kivy.lang import Builder
+from kivy.core.window import Window
+from kivy.utils import get_color_from_hex as hex
+from kivy.metrics import dp
+from kivy.clock import Clock
 
 # layout imports
+from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import Screen, ScreenManager, NoTransition, FadeTransition
 
 # widget imports
 from kivy.core.image import Image
+from kivy.graphics import Color, Rectangle
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.image import AsyncImage
+from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem, TabbedPanelHeader
 
 # base imports
 from PIL import Image as PILImage
+from io import BytesIO
 import numpy as np
-import os
-
+import math
+import io
 
 '''
 Import Commands
@@ -51,7 +70,7 @@ Window.clearcolor = (1, 1, 1, 1)
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 # Builds the kivy gui
-Builder.load_file('MediaDisplayer/GUI/kv_application_files/application.kv')
+Builder.load_file('MediaDisplayer/gui/kv_application_files/application.kv')
 
 
 class ImageTransformer:
@@ -82,15 +101,13 @@ class ImageTransformer:
             raise Exception('PILimg Not Populated')
 
         self.img_list.append(img.texture)
-        fp = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
-        PILimg.save(fp)
-        img.source = fp
+        PILimg.save(os.path.join(os.path.dirname(__file__), 'images\\temp.png'))
+        img.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
 
         img.reload()
 
     def undo(self, img):
         if self.img_list:
-            print('uhm')
 
             texture = self.img_list.pop()
 
@@ -99,10 +116,10 @@ class ImageTransformer:
             im = PILImage.fromarray(test)
             if im.mode == 'RGBA':
                 im = im.convert('RGB')
-            fp = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
-            im.save(fp)
-            img.source = fp
+            im.save(os.path.join(os.path.dirname(__file__), 'images\\temp.png'))
+            img.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
             img.reload()
+
 
 class ContainerBox(ImageTransformer, BoxLayout):
     source = ObjectProperty('MediaDisplayer/GUI/images/landscape.jpg')
@@ -111,33 +128,25 @@ class ContainerBox(ImageTransformer, BoxLayout):
         super().__init__(**kwargs)
 
     def browse_files(self, img):
-        temp_location = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
         path = filechooser.open_file(title="Pick an Image file..",
                                      filters=["*.jpg", "*.png", "*.svg"])
         if not path:
             return
-        self.source = path[0]
-
-        pil_img = PILImage.open(path[0])
-        pil_img.save(temp_location)
-        img.source = temp_location
+        PILImage.open(path[0]).save(os.path.join(os.path.dirname(__file__), 'images\\temp.png'))
+        self.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
+        self.img_list.clear()
         img.reload()
-        img.img_list = []
 
-    def save_image(self):
-        temp_location = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
-        path = filechooser.save_file(title="Save Your Image..",
-                                     filters=["*.png"])
+    def save_image(self, img):
+        path = filechooser.save_file(title="Save File As")
         if not path:
             return
-
-        pil_img = PILImage.open(temp_location)
-        pil_img.save('{}.png'.format(path[0]))
+        Image(img.texture).save(path[0])
 
     def restart(self, img):
-        img.source = self.source
+        img.source = os.path.join(os.path.dirname(__file__), 'images\\landscape.jpg')
+        self.img_list.clear()
         img.reload()
-        img.img_list = []
 
 
 class SliderButton(ImageTransformer, StackLayout):
