@@ -109,6 +109,7 @@ class ContainerBox(ImageTransformer, BoxLayout):
         super().__init__(**kwargs)
 
     def browse_files(self, img):
+        self.img_list.append(img.texture)
         path = filechooser.open_file(title="Pick an Image file..",
                                      filters=["*.jpg", "*.jpeg", "*.png"])
         if not path:
