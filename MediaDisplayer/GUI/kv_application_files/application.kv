@@ -33,7 +33,7 @@
             background_normal: 'GUI/images/load_image.png'
             background_down: 'GUI/images/load_image.png'
             size_hint: (0.1, 1)
-            on_release: root.browse_files(imageView)
+            on_release: root.browse_files(root.image_id[0], root.image_id[1])
 
         Label:
             size_hint: (0.1, 1)

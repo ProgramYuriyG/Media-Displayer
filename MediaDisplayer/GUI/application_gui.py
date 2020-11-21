@@ -56,6 +56,7 @@ Builder.load_file('MediaDisplayer/gui/kv_application_files/application.kv')
 
 class ImageTransformer:
     img_list = ObjectProperty([])
+    mode_list = ObjectProperty([])
 
     def transformImage(self, img, text, params, is_histogram, histogram_img):
         PILimg = ''
@@ -82,6 +83,7 @@ class ImageTransformer:
             raise Exception('PILimg Not Populated')
 
         self.img_list.append(img.texture)
+        self.mode_list.append(PILImage.open(img.source).mode)
         PILimg.save(os.path.join(os.path.dirname(__file__), 'images\\temp.png'))
         img.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
         img.reload()
@@ -96,12 +98,11 @@ class ImageTransformer:
         if self.img_list:
 
             texture = self.img_list.pop()
-
+            mode = self.mode_list.pop()
             test = np.frombuffer(texture.pixels, np.uint8)
             test = test.reshape(texture.height, texture.width, 4)
-            im = PILImage.fromarray(test)
-            if im.mode == 'RGBA':
-                im = im.convert('RGB')
+            im = PILImage.fromarray(test).convert(mode)
+
             im.save(os.path.join(os.path.dirname(__file__), 'images\\temp.png'))
             img.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
             img.reload()
@@ -131,7 +132,7 @@ class ContainerBox(ImageTransformer, BoxLayout):
     def display_image(self):
         self.is_histogram = False
 
-    def browse_files(self, img):
+    def browse_files(self, img, hist_image):
         self.img_list.append(img.texture)
         path = filechooser.open_file(title="Pick an Image file..",
                                      filters=["*.jpg", "*.jpeg", "*.png"])
@@ -141,6 +142,13 @@ class ContainerBox(ImageTransformer, BoxLayout):
         self.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
         img.reload()
         self.img_list = []
+        self.mode_list = []
+
+        if self.is_histogram:
+            plt = histogram.display_histogram(img)
+            plt.savefig(os.path.join(os.path.dirname(__file__), 'images\\histogram.png'))
+            plt.clf()
+            hist_image.reload()
 
     def save_image(self, img):
         path = filechooser.save_file(title="Save File As")
@@ -157,16 +165,17 @@ class ContainerBox(ImageTransformer, BoxLayout):
     def restart(self, img, hist_image):
         if len(self.img_list) > 0:
             texture = self.img_list[0]
+            mode = self.mode_list[0]
 
             test = np.frombuffer(texture.pixels, np.uint8)
             test = test.reshape(texture.height, texture.width, 4)
-            im = PILImage.fromarray(test)
-            if im.mode == 'RGBA':
-                im = im.convert('RGB')
+            im = PILImage.fromarray(test).convert(mode)
+
             im.save(os.path.join(os.path.dirname(__file__), 'images\\temp.png'))
             img.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
             img.reload()
             self.img_list = []
+            self.mode_list = []
 
             if self.is_histogram:
                 plt = histogram.display_histogram(img)
