@@ -55,9 +55,9 @@ Builder.load_file('MediaDisplayer/gui/kv_application_files/application.kv')
 
 
 class ImageTransformer:
-    img_list = []
+    img_list = ObjectProperty([])
 
-    def transformImage(self, img, text, params):
+    def transformImage(self, img, text, params, is_histogram, histogram_img):
         PILimg = ''
         text = ' '.join(text.split())
 
@@ -84,10 +84,15 @@ class ImageTransformer:
         self.img_list.append(img.texture)
         PILimg.save(os.path.join(os.path.dirname(__file__), 'images\\temp.png'))
         img.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
-
         img.reload()
 
-    def undo(self, img):
+        if is_histogram:
+            plt = transformations.display_histogram(img)
+            plt.savefig('MediaDisplayer/GUI/images/histogram.png')
+            plt.clf()
+            histogram_img.reload()
+
+    def undo(self, img, is_histogram, histogram_img):
         if self.img_list:
 
             texture = self.img_list.pop()
@@ -101,12 +106,30 @@ class ImageTransformer:
             img.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
             img.reload()
 
+            if is_histogram:
+                plt = transformations.display_histogram(img)
+                plt.savefig('MediaDisplayer/GUI/images/histogram.png')
+                plt.clf()
+                histogram_img.reload()
+
 
 class ContainerBox(ImageTransformer, BoxLayout):
     source = ObjectProperty('MediaDisplayer/GUI/images/landscape.jpg')
+    histogram_source = ObjectProperty('MediaDisplayer/GUI/images/histogram.png')
+    is_histogram = ObjectProperty(False)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+    def display_histogram(self, img, hist_image):
+        self.is_histogram = True
+        plt = transformations.display_histogram(img)
+        plt.savefig('MediaDisplayer/GUI/images/histogram.png')
+        plt.clf()
+        hist_image.reload()
+
+    def display_image(self):
+        self.is_histogram = False
 
     def browse_files(self, img):
         self.img_list.append(img.texture)
@@ -117,6 +140,7 @@ class ContainerBox(ImageTransformer, BoxLayout):
         PILImage.open(path[0]).save(os.path.join(os.path.dirname(__file__), 'images\\temp.png'))
         self.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
         img.reload()
+        self.img_list = []
 
     def save_image(self, img):
         path = filechooser.save_file(title="Save File As")
@@ -131,12 +155,21 @@ class ContainerBox(ImageTransformer, BoxLayout):
         img.reload()
 
     def restart(self, img):
-        img.source = os.path.join(os.path.dirname(__file__), 'images\\landscape.jpg')
-        self.img_list.clear()
-        img.reload()
+        if len(self.img_list) > 0:
+            texture = self.img_list[0]
+
+            test = np.frombuffer(texture.pixels, np.uint8)
+            test = test.reshape(texture.height, texture.width, 4)
+            im = PILImage.fromarray(test)
+            if im.mode == 'RGBA':
+                im = im.convert('RGB')
+            im.save(os.path.join(os.path.dirname(__file__), 'images\\temp.png'))
+            img.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
+            img.reload()
+            self.img_list = []
 
 
-class SliderButton(ImageTransformer, StackLayout):
+class SliderButton(StackLayout):
     button_text = ObjectProperty(None)
     image_id = ObjectProperty(None)
 
@@ -148,15 +181,9 @@ class SliderButton(ImageTransformer, StackLayout):
         super().__init__(**kwargs)
 
 
-class FullButton(ImageTransformer, RelativeLayout):
+class FullButton(RelativeLayout):
     button_text = ObjectProperty(None)
     image_id = ObjectProperty(None)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-
-class LayoutContainer(BoxLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -171,4 +198,4 @@ class GuiApplication(App):
     def build(self):
         self.window_settings()
         self.title = 'Media Displayer'
-        return LayoutContainer()
+        return ContainerBox()
