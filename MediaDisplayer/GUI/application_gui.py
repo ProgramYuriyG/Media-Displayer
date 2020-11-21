@@ -87,7 +87,7 @@ class ImageTransformer:
         img.reload()
 
         if is_histogram:
-            plt = transformations.display_histogram(img)
+            plt = histogram.display_histogram(img)
             plt.savefig(os.path.join(os.path.dirname(__file__), 'images\\histogram.png'))
             plt.clf()
             histogram_img.reload()
@@ -107,7 +107,7 @@ class ImageTransformer:
             img.reload()
 
             if is_histogram:
-                plt = transformations.display_histogram(img)
+                plt = histogram.display_histogram(img)
                 plt.savefig(os.path.join(os.path.dirname(__file__), 'images\\histogram.png'))
                 plt.clf()
                 histogram_img.reload()
@@ -123,7 +123,7 @@ class ContainerBox(ImageTransformer, BoxLayout):
 
     def display_histogram(self, img, hist_image):
         self.is_histogram = True
-        plt = transformations.display_histogram(img)
+        plt = histogram.display_histogram(img)
         plt.savefig(os.path.join(os.path.dirname(__file__), 'images\\histogram.png'))
         plt.clf()
         hist_image.reload()
@@ -154,7 +154,7 @@ class ContainerBox(ImageTransformer, BoxLayout):
         self.source = os.path.join(os.path.dirname(__file__), 'images\\', org_source)
         img.reload()
 
-    def restart(self, img):
+    def restart(self, img, hist_image):
         if len(self.img_list) > 0:
             texture = self.img_list[0]
 
@@ -167,6 +167,12 @@ class ContainerBox(ImageTransformer, BoxLayout):
             img.source = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
             img.reload()
             self.img_list = []
+
+            if self.is_histogram:
+                plt = histogram.display_histogram(img)
+                plt.savefig(os.path.join(os.path.dirname(__file__), 'images\\histogram.png'))
+                plt.clf()
+                hist_image.reload()
 
 
 class SliderButton(StackLayout):

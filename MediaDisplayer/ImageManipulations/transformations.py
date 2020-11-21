@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-import matplotlib
 import numpy as np
 from PIL import Image
 import cv2
@@ -229,37 +227,3 @@ def aindane(kivy_img, lmda):
 
     img_enhanced = Image.fromarray(img_enhanced)
     return img_enhanced
-
-# method to display the color/greyscale histogram of the image
-def display_histogram(kivy_img):
-    img = Image.open(kivy_img.source)
-    plt.clf()
-
-    if img.mode == 'L':
-        img_source = np.array(img.getdata())
-        fig, ax = plt.subplots(figsize=(10, 4))
-        n, bins, patches = ax.hist(img_source, bins=range(256), edgecolor='none')
-        ax.set_title("histogram")
-        ax.set_xlim(0, 255)
-
-        cm = plt.cm.get_cmap('cool')
-        norm = matplotlib.colors.Normalize(vmin=bins.min(), vmax=bins.max())
-        for b, p in zip(bins, patches):
-            p.set_facecolor(cm(norm(b)))
-        # plt.show()
-    elif img.mode == 'RGB' or img.mode == 'RGBA':
-        img_source = np.array(img)
-        colors = ("r", "g", "b")
-        channel_ids = (0, 1, 2)
-
-        plt.xlim([0, 256])
-        for channel_id, c in zip(channel_ids, colors):
-            histogram, bin_edges = np.histogram(
-                img_source[:, :, channel_id], bins=256, range=(0, 256)
-            )
-            plt.plot(bin_edges[0:-1], histogram, color=c)
-
-        plt.xlabel("Color value")
-        plt.ylabel("Pixels")
-
-    return plt

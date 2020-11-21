@@ -1,41 +1,48 @@
 import numpy as np
 from PIL import Image
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
+import matplotlib
 
 '''
 Visually display the greyscale intensity or color channel values of a given image
 '''
 
 
-def display_histogram(img):
-    x = np.arange(0, 256)
-    width, height = img.size
+# method to display the color/greyscale histogram of the image
+def display_histogram(kivy_img):
+    img = Image.open(kivy_img.source)
+    plt.close()
 
     if img.mode == 'L':
-        y = np.zeros(256, np.uint64)
+        img_source = np.array(img.getdata())
+        fig, ax = plt.subplots()
+        n, bins, patches = ax.hist(img_source, bins=range(256), edgecolor='none')
+        ax.set_title("Intensity Histogram")
+        ax.set_xlim(0, 255)
 
-        for i in range(width):
-            for j in range(height):
-                y[img.getpixel((i, j))] += 1
-        plt.bar(x, y, color="grey")
-
+        cm = plt.cm.get_cmap('cool')
+        norm = matplotlib.colors.Normalize(vmin=bins.min(), vmax=bins.max())
+        for b, p in zip(bins, patches):
+            p.set_facecolor(cm(norm(b)))
+        plt.xlabel("Color value")
+        plt.ylabel("Pixels")
     elif img.mode == 'RGB' or img.mode == 'RGBA':
-        r = np.zeros(256, np.uint64)
-        g = np.zeros(256, np.uint64)
-        b = np.zeros(256, np.uint64)
+        img_source = np.array(img)
+        colors = ("r", "g", "b")
+        channel_ids = (0, 1, 2)
 
-        for i in range(width):
-            for j in range(height):
-                r[img.getpixel((i, j))[0]] += 1
-                g[img.getpixel((i, j))[1]] += 1
-                b[img.getpixel((i, j))[2]] += 1
+        plt.xlim([0, 256])
+        for channel_id, c in zip(channel_ids, colors):
+            histogram, bin_edges = np.histogram(
+                img_source[:, :, channel_id], bins=256, range=(0, 256)
+            )
+            plt.plot(bin_edges[0:-1], histogram, color=c)
 
-        plt.bar(x, r, color="red", alpha=0.7, label="red")
-        plt.bar(x, g, color="green", alpha=0.6, label="green")
-        plt.bar(x, b, color="blue", alpha=0.5, label="blue")
-        plt.legend(loc='upper right')
+        plt.title("Intensity Histogram")
+        plt.xlabel("Color value")
+        plt.ylabel("Pixels")
 
-    plt.show(cmap="gray")
+    return plt
 
 
 '''
