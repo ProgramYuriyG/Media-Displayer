@@ -88,7 +88,7 @@ class ImageTransformer:
 
         if is_histogram:
             plt = transformations.display_histogram(img)
-            plt.savefig('MediaDisplayer/GUI/images/histogram.png')
+            plt.savefig(os.path.join(os.path.dirname(__file__), 'images\\histogram.png'))
             plt.clf()
             histogram_img.reload()
 
@@ -108,14 +108,14 @@ class ImageTransformer:
 
             if is_histogram:
                 plt = transformations.display_histogram(img)
-                plt.savefig('MediaDisplayer/GUI/images/histogram.png')
+                plt.savefig(os.path.join(os.path.dirname(__file__), 'images\\histogram.png'))
                 plt.clf()
                 histogram_img.reload()
 
 
 class ContainerBox(ImageTransformer, BoxLayout):
-    source = ObjectProperty('MediaDisplayer/GUI/images/landscape.jpg')
-    histogram_source = ObjectProperty('MediaDisplayer/GUI/images/histogram.png')
+    source = ObjectProperty(os.path.join(os.path.dirname(__file__), 'images\\landscape.jpg'))
+    histogram_source = ObjectProperty(os.path.join(os.path.dirname(__file__), 'images\\histogram.png'))
     is_histogram = ObjectProperty(False)
 
     def __init__(self, **kwargs):
@@ -124,7 +124,7 @@ class ContainerBox(ImageTransformer, BoxLayout):
     def display_histogram(self, img, hist_image):
         self.is_histogram = True
         plt = transformations.display_histogram(img)
-        plt.savefig('MediaDisplayer/GUI/images/histogram.png')
+        plt.savefig(os.path.join(os.path.dirname(__file__), 'images\\histogram.png'))
         plt.clf()
         hist_image.reload()
 
