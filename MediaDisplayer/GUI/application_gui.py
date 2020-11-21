@@ -57,7 +57,8 @@ Builder.load_file('MediaDisplayer/GUI/kv_application_files/application.kv')
 class ImageTransformer:
     img_list = []
 
-    def transformImage(self, img, text, params):
+    # , app.root.ids.button_layout.is_histogram, app.root.ids.button_layout.image_id[1])
+    def transformImage(self, img, text, params):  # , is_histogram, hist_image):
         PILimg = ''
         text = ' '.join(text.split())
 
@@ -86,12 +87,15 @@ class ImageTransformer:
         PILimg.save(fp)
         img.source = fp
 
-        img.reload()
+        # if is_histogram:
+        #     plt = transformations.display_histogram(img)
+        #     fp = os.path.join(os.path.dirname(__file__), 'images\\histogram.png')
+        #     plt.savefig(fp)
+        #     plt.clf()
+        #     hist_image.reload()
 
     def undo(self, img):
         if self.img_list:
-            print('uhm')
-
             texture = self.img_list.pop()
 
             test = np.frombuffer(texture.pixels, np.uint8)
@@ -104,16 +108,35 @@ class ImageTransformer:
             img.source = fp
             img.reload()
 
+            # if is_histogram:
+            #     plt = transformations.display_histogram(img)
+            #     plt.savefig('MediaDisplayer/GUI/images/histogram.png')
+            #     plt.clf()
+            #     hist_image.reload()
+
 class ContainerBox(ImageTransformer, BoxLayout):
     source = ObjectProperty('MediaDisplayer/GUI/images/landscape.jpg')
+    histogram_source = ObjectProperty('MediaDisplayer/GUI/images/histogram.png')
+    is_histogram = ObjectProperty(False)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    def display_histogram(self, img, hist_image):
+        self.is_histogram = True
+        plt = transformations.display_histogram(img)
+        plt.savefig('MediaDisplayer/GUI/images/histogram.png')
+        plt.clf()
+        hist_image.reload()
+
+    def display_image(self):
+        self.is_histogram = False
+
     def browse_files(self, img):
+        self.img_list.append(img.texture)
         temp_location = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
         path = filechooser.open_file(title="Pick an Image file..",
-                                     filters=["*.jpg", "*.png", "*.svg"])
+                                     filters=["*.jpg", "*.jpeg", "*.png"])
         if not path:
             return
         self.source = path[0]
@@ -124,20 +147,27 @@ class ContainerBox(ImageTransformer, BoxLayout):
         img.reload()
         img.img_list = []
 
-    def save_image(self):
-        temp_location = os.path.join(os.path.dirname(__file__), 'images\\temp.png')
-        path = filechooser.save_file(title="Save Your Image..",
-                                     filters=["*.png"])
+    def save_image(self, img):
+        path = filechooser.save_file(title="Save File As")
+        org_source = os.path.basename(img.source)
         if not path:
             return
+        if not path[0].lower().endswith((".jpg", ".jpeg", ".png")):
+            path[0] += ".png"
+        Image(img.texture).save(path[0])
 
-        pil_img = PILImage.open(temp_location)
-        pil_img.save('{}.png'.format(path[0]))
+        self.source = os.path.join(os.path.dirname(__file__), 'images\\', org_source)
+        img.reload()
 
-    def restart(self, img):
+    def restart(self, img, hist_image):
         img.source = self.source
         img.reload()
-        img.img_list = []
+        self.img_list = []
+        if self.is_histogram:
+            plt = transformations.display_histogram(img)
+            plt.savefig('MediaDisplayer/GUI/images/histogram.png')
+            plt.clf()
+            hist_image.reload()
 
 
 class SliderButton(ImageTransformer, StackLayout):

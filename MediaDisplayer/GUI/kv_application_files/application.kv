@@ -1,5 +1,5 @@
 <ContainerBox>:
-    image_id: [imageView]
+    image_id: [imageView, histogramView]
     id: primaryContainer
     orientation: 'vertical'
     BoxLayout:
@@ -7,11 +7,31 @@
         size_hint_x: 1
 
         FloatLayout:
-            size_hint: (0.35, 1)
+            size_hint: (0.01, 1)
 
         Button:
-            background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/load_image.png'
-            background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/load_image.png'
+            size_hint: (0.07, 1)
+            background_normal: 'GUI/images/button_background_small.png'
+            background_down: 'GUI/images/button_pressed_small.png'
+            font_size: '18dp'
+            halign: 'center'
+            text: 'Image'
+            on_release: root.display_image()
+        Button:
+            size_hint: (0.07, 1)
+            background_normal: 'GUI/images/button_background_small.png'
+            background_down: 'GUI/images/button_pressed_small.png'
+            font_size: '18dp'
+            halign: 'center'
+            text: 'Histogram'
+            on_release: root.display_histogram(root.image_id[0], root.image_id[1])
+
+        FloatLayout:
+            size_hint: (0.20, 1)
+
+        Button:
+            background_normal: 'GUI/images/load_image.png'
+            background_down: 'GUI/images/load_image.png'
             size_hint: (0.1, 1)
             on_release: root.browse_files(imageView)
 
@@ -21,8 +41,8 @@
             text: 'Media Displayer'
 
         Button:
-            background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/save_image.png'
-            background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/save_image.png'
+            background_normal: 'GUI/images/save_image.png'
+            background_down: 'GUI/images/save_image.png'
             size_hint: (0.1, 1)
             on_release: root.save_image()
 
@@ -30,10 +50,10 @@
             size_hint: (0.19, 1)
 
         Button:
-            background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/restart_icon.png'
-            background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/restart_icon.png'
+            background_normal: 'GUI/images/restart_icon.png'
+            background_down: 'GUI/images/restart_icon.png'
             size_hint: (0.05, 1)
-            on_release: root.restart(root.image_id[0])
+            on_release: root.restart(root.image_id[0], root.image_id[1])
 
         FloatLayout:
             size_hint: (0.11, 1)
@@ -46,14 +66,22 @@
             size_hint_x: 1
             cols: 2
 
-            BoxLayout:
+            FloatLayout:
                 anchor_x: 'center'
                 anchor_y: 'center'
 
                 Image:
+                    opacity: 0 if root.is_histogram else 1
                     size_hint: (1, 1)
                     id: imageView
                     source: root.source
+                    allow_stretch: True
+
+                Image:
+                    opacity: 1 if root.is_histogram else 0
+                    size_hint: (1, 1)
+                    id: histogramView
+                    source: root.histogram_source
                     allow_stretch: True
 
         GridLayout:
@@ -66,16 +94,16 @@
                 orientation: 'horizontal'
 
                 Button:
-                    background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
-                    background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+                    background_normal: 'GUI/images/button_background_small.png'
+                    background_down: 'GUI/images/button_pressed_small.png'
                     font_size: '18dp'
                     halign: 'center'
                     text: "Undo"
                     on_release: root.undo(root.image_id[0])
 
                 Button:
-                    background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
-                    background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+                    background_normal: 'GUI/images/button_background_small.png'
+                    background_down: 'GUI/images/button_pressed_small.png'
                     font_size: '18dp'
                     halign: 'center'
                     text: "RGB to Greyscale"
@@ -87,6 +115,7 @@
 
             SliderButton:
                 button_text: "Binary\nTransformation"
+                slider_text: "Threshold value: "
                 image_id: root.image_id[0]
                 min_value: 0
                 max_value: 255
@@ -98,8 +127,8 @@
 
                 Button:
                     size_hint: (0.4, 0.8)
-                    background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
-                    background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+                    background_normal: 'GUI/images/button_background_small.png'
+                    background_down: 'GUI/images/button_pressed_small.png'
                     font_size: '18dp'
                     halign: 'center'
                     text: "Multilevel\nTransformation"
@@ -134,6 +163,7 @@
 
             SliderButton:
                 button_text: "Gamma\nTransformation"
+                slider_text: "Gamma value: "
                 image_id: root.image_id[0]
                 min_value: 0
                 max_value: 25
@@ -145,6 +175,7 @@
 
             SliderButton:
                 button_text: "AINDANE Color\nEnhancement"
+                slider_text: "Lambda value: "
                 image_id: root.image_id[0]
                 min_value: 0.75
                 max_value: 0.99
@@ -159,8 +190,8 @@
     Button:
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         size_hint: (0.8, 0.7)
-        background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
-        background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+        background_normal: 'GUI/images/button_background_small.png'
+        background_down: 'GUI/images/button_pressed_small.png'
         font_size: '18dp'
         text: root.button_text
         on_release: root.transformImage(root.image_id, self.text, [])
@@ -171,6 +202,7 @@
     size_hint: (1, 1)
     image_id: ''
 
+    slider_text: ''
     button_text: ''
     min_value: 0
     max_value: 0
@@ -179,8 +211,8 @@
     Button:
         id: slider_button
         size_hint: (0.4, 0.8)
-        background_normal: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_background_small.png'
-        background_down: 'C:/Users/Yuriy Glukhov/Desktop/Media-Displayer-main/MediaDisplayer/GUI/images/button_pressed_small.png'
+        background_normal: 'GUI/images/button_background_small.png'
+        background_down: 'GUI/images/button_pressed_small.png'
         font_size: '18dp'
         halign: 'center'
         text: root.button_text
@@ -200,7 +232,7 @@
             step: root.step_value
         Label:
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-            text: 'Lambda value: ' + str(round(slider.value, 2))
+            text: root.slider_text + str(round(slider.value, 2))
 
 <LayoutContainer>
     orientation: 'vertical'
