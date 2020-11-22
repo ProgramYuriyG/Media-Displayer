@@ -1,5 +1,7 @@
 # Project Eikona
 
+![](/images/media_displayer.png)
+
 
 ## Necessary Installations
 Before running the application, from inside of the Windows console, make sure any necessary packages are installed by executing the commands in the following order:
