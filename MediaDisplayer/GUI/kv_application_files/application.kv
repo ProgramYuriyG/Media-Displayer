@@ -11,16 +11,16 @@
 
         Button:
             size_hint: (0.07, 1)
-            background_normal: 'GUI/images/button_background_small.png'
-            background_down: 'GUI/images/button_pressed_small.png'
+            background_normal: 'GUI/images/tab_background.png' if root.is_histogram else 'GUI/images/tab_background_pressed.png'
+            background_down: 'GUI/images/tab_background.png' if root.is_histogram else 'GUI/images/tab_background_pressed.png'
             font_size: '18dp'
             halign: 'center'
             text: 'Image'
             on_release: root.display_image()
         Button:
             size_hint: (0.07, 1)
-            background_normal: 'GUI/images/button_background_small.png'
-            background_down: 'GUI/images/button_pressed_small.png'
+            background_normal: 'GUI/images/tab_background_pressed.png' if root.is_histogram else 'GUI/images/tab_background.png'
+            background_down: 'GUI/images/tab_background_pressed.png' if root.is_histogram else 'GUI/images/tab_background.png'
             font_size: '18dp'
             halign: 'center'
             text: 'Histogram'
@@ -64,7 +64,7 @@
         GridLayout:
             size_hint_y: 1
             size_hint_x: 1
-            cols: 2
+            cols: 1
 
             FloatLayout:
                 anchor_x: 'center'
