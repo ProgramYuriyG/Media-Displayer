@@ -37,21 +37,23 @@ From the base directory run the following command from console:
 
 
 ## Media Displayer Toolbar:
-1.	Image Display Button: Toggles off the histogram display if shown and displays the currently loaded image.
+1.	Image Display Button: 
+    - Toggles off the histogram display if shown and displays the currently loaded image.
 
-2.	Histogram Display Button: Shows the currently loaded image’s histogram as an overlay to the user. 
+2.	Histogram Display Button: 
+    - Shows the currently loaded image’s histogram as an overlay to the user. 
+    - NOTE: The user may freely use the transform features, undo changes, save and load a new image and the histogram will update accordingly to reflect the new changes.
 
-NOTE: The user may freely use the transform features, undo changes, save and load a new image and the histogram will update accordingly to reflect the new changes.
+3.	Load Button: 
+    - Loads a new image to the display window
+    - NOTE: Loading in a new image will clear old transformations from memory. The user will have to load the old image back in if they wish to use it for further transformations or save the image before loading something else.
 
-3.	Load Button: Loads a new image to the display window
+4.	Save Button: 
+    - Save the current image to a targeted location. If the user does not specify the extension type in the image name, the image is saved as a .png by default.
 
-NOTE: Loading in a new image will clear old transformations from memory. The user will have to load the old image back in if they wish to use it for further transformations or save the image before loading something else.
-
-4.	Save Button: Save the current image to a targeted location. If the user does not specify the extension type in the image name, the image is saved as a .png by default.
-
-5.	Reload Button: Revert the image back to its initial state prior to any transformations being applied
-
-NOTE: Reloading the image will clear old transformations from memory, similarly to loading a new image
+5.	Reload Button: 
+    - Revert the image back to its initial state prior to any transformations being applied
+    - NOTE: Reloading the image will clear old transformations from memory, similarly to loading a new image
 
 
 ## Transformation Features
